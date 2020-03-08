@@ -19,8 +19,10 @@ public class AccountService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = accountRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username));
+        Account account = accountRepository.findByUsername(username);
+        if (account == null) {
+            throw new UsernameNotFoundException(username);
+        }
 
         return User.builder()
                 .username(account.getUsername())
