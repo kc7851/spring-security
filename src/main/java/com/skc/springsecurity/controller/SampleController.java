@@ -2,13 +2,18 @@ package com.skc.springsecurity.controller;
 
 import com.skc.springsecurity.account.AccountContext;
 import com.skc.springsecurity.account.AccountRepository;
+import com.skc.springsecurity.common.SecurityLogger;
 import com.skc.springsecurity.service.SampleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.security.Principal;
+import java.util.concurrent.Callable;
 
 @Controller
 public class SampleController {
@@ -52,4 +57,27 @@ public class SampleController {
 
         return "admin";
     }
+
+    @GetMapping("/async-handler")
+    @ResponseBody
+    public Callable<String> asyncHandler() {
+        SecurityLogger.log("MVC");
+        return new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                SecurityLogger.log("Callable");
+                return "Async Handler";
+            }
+        };
+    }
+
+    @GetMapping("/async-service")
+    @ResponseBody
+    public String asyncService() {
+        SecurityLogger.log("MVC, before async service");
+        sampleService.asyncService();
+        SecurityLogger.log("MVC, after async service");
+        return "Async Service";
+    }
+
 }
