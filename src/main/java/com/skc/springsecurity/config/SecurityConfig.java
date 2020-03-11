@@ -32,10 +32,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/", "/info", "/account/**", "/signup").permitAll()
                 .mvcMatchers("/admin").hasRole("ADMIN")
                 .anyRequest().authenticated();
-        http.formLogin();
+        http.formLogin()
+                .loginPage("/custom/login").permitAll()
+        ;
         http.httpBasic();
 
-        http.logout().logoutSuccessUrl("/");
+        http.logout()
+                .logoutUrl("/custom/logout").permitAll()
+                .logoutSuccessUrl("/")
+        ;
 
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
     }
