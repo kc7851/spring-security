@@ -1,5 +1,6 @@
 package com.skc.springsecurity.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -23,6 +25,9 @@ import java.io.IOException;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private UserDetailsService accountService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -51,6 +56,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/custom/logout").permitAll()
                 .logoutSuccessUrl("/")
         ;
+
+        http.rememberMe()
+                .userDetailsService(accountService)
+                .rememberMeParameter("remember-account") // remember checkbox name 이름
+                .tokenValiditySeconds(3600 * 24 * 30) // 쿠키 유효시간 설정
+                .key("1242442re244me123mb4er-me2-cus4234tom-103134085127489");
 
         http.sessionManagement()
                 .sessionFixation()
