@@ -1,5 +1,6 @@
 package com.skc.springsecurity.config;
 
+import com.skc.springsecurity.common.LoggingFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -62,6 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .rememberMeParameter("remember-account") // remember checkbox name 이름
                 .tokenValiditySeconds(3600 * 24 * 30) // 쿠키 유효시간 설정
                 .key("1242442re244me123mb4er-me2-cus4234tom-103134085127489");
+
+        http.addFilterBefore(new LoggingFilter(), WebAsyncManagerIntegrationFilter.class);
 
         http.sessionManagement()
                 .sessionFixation()
