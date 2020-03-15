@@ -1,10 +1,26 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Index</title>
 </head>
 <body>
-    <h1 th:text="${message}">Hello</h1>
+<h1 th:text="${message}">Hello</h1>
+<!--        기존 th 방식-->
+<!--        <div th:if="${#authorization.expr('isAuthenticated()')}">-->
+<!--            <h2 th:text="${#authentication.name}">Name</h2>-->
+<!--            <a href="/custom/logout" th:href="@{/custom/logout}">Logout</a>-->
+<!--        </div>-->
+<!--        <div th:unless="${#authorization.expr('isAuthenticated()')}">-->
+<!--            <a href="/custom/login" th:href="@{/custom/login}">Login</a>-->
+<!--        </div>-->
+<!--        sec 확장 플러그인 사용방식-->
+    <div sec:authorize-expr="hasRole('ROLE_user')">
+        <h2 sec:authentication="name">Name</h2>
+        <a href="/custom/logout" th:href="@{/custom/logout}">Logout</a>
+    </div>
+    <div sec:authorize-expr="!isAuthenticated()">
+        <a href="/custom/login" th:href="@{/custom/login}">Login</a>
+    </div>
 </body>
 </html>
